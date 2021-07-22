@@ -10,14 +10,11 @@ export default class SaveManager {
         this.worldFolder = pathJoin(__dirname + "/../save/world/");
     }
 
-    static loadChunk(chunkPos: number): string {
+    static loadChunk(chunkPos: number): string | null {
         // let chunkPath = this.worldFolder + chunkPos.toString();
-
         // if (!fs.existsSync(chunkPath)) return null;
-
         // return fs.readFileSync(chunkPath, { encoding: "ascii" }).toString();
-
-
+        return null;
     }
 }
 
@@ -26,7 +23,7 @@ function saveWorld(gameFolder: string) {
 
     createFolder(worldFolder);
 
-    World.chunks.forEachAll(chunk => {
+    World.chunks.forEach(chunk => {
         saveChunk(chunk, worldFolder);
     });
 }

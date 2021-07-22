@@ -14,10 +14,11 @@ export default class Client {
             }),
             cb
         );
+
     }
 
     error(message: string, fatal = false) {
-        if (fatal) this.wsClient.close(-1, `Fatal error: ${message}`);
+        if (fatal) this.wsClient.close(3001, `Fatal error: ${message}`);
         else this.wsClient.send("Error: " + message);
     }
 }

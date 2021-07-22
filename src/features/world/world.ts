@@ -2,10 +2,9 @@ import Vector2D from "../../types/vector2D";
 import { negativeModulo } from "../../common/utils";
 import Block from "./blocks/block";
 import ChunksManager from "./chunksManager";
-import Player from "../../types/player";
+import Player from "../players/player";
 import Generation from "./generation/generation";
-
-const renderDistance = 4;
+import { renderDistance } from "../../common/constants";
 
 export default class World {
     static readonly chunks = new ChunksManager();

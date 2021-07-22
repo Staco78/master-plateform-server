@@ -1,10 +1,9 @@
 import Client from "../connection/client";
-import { Players } from "../data/players";
-import Player from "../types/player";
+import { Players } from "./players/players";
+import Player from "./players/player";
 import Vector2D from "../types/vector2D";
-import World from "./world/world";
 
-export default function login(client: Client, data: LoginData) {
+export default function login(client: Client, data: Receive.Login) {
     if (!data.username) {
         return client.error("Invalid data");
     }
@@ -12,11 +11,8 @@ export default function login(client: Client, data: LoginData) {
     const player = createPlayer(client, data);
 
     Players.addPlayer(player);
-
-    const worldData = World.getDataForPlayer(player);
-    client.send("login", { success: true, chunks: worldData });
 }
 
-function createPlayer(client: Client, data: LoginData): Player {
-    return new Player(data.username, new Vector2D(0, 0), client);
+function createPlayer(client: Client, data: Receive.Login): Player {
+    return new Player(data.username, new Vector2D(0, 60), client);
 }

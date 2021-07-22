@@ -1,8 +1,7 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import WebSocket from "ws";
 import EventEmitter from "events";
 import Client from "./client";
+import { Players } from "../features/players/players";
 
 class ConnectionServer extends EventEmitter {
     readonly ws = new WebSocket.Server({ port: 3497 });
@@ -30,10 +29,16 @@ class ConnectionServer extends EventEmitter {
 
                 this.emit(json.action, client, json.data || {});
             });
+
+            wss.on("close", (code, reason) => {
+                Players.deleteFromClient(client);
+
+                console.log("Client disconnected", code, reason);
+            });
         });
     }
 
-    on(event: actionReceive, callback: (client: Client, data: Object) => void): this {
+    on(event: actionReceive, callback: (client: Client, data: any) => void): this {
         return super.on(event, callback);
     }
 }
