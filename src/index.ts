@@ -1,6 +1,3 @@
-import WebSocket from "ws";
+import RequestInterpreter from "./connection/requestInterpreter";
 
-const ws = new WebSocket.Server({
-    port: 3497,
-});
-
+new RequestInterpreter();

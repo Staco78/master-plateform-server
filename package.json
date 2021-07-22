@@ -4,10 +4,12 @@
     "version": "1.0.0",
     "main": "dist/index.js",
     "devDependencies": {
+        "@types/random-seed": "^0.3.3",
         "@types/ws": "^7.4.7",
         "typescript": "^4.3.5"
     },
     "dependencies": {
+        "random-seed": "^0.3.0",
         "ws": "^7.5.3"
     },
     "scripts": {
