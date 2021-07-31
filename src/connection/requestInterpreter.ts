@@ -1,24 +1,25 @@
-import Server from "./server";
+import ConnectionServer from "./connectionServer"; 
 import login from "../features/login";
 import { Players } from "../features/players/players";
+import { Server } from "../server";
 
 export default class RequestInterpreter {
-    readonly server = new Server();
+    readonly connectionServer = new ConnectionServer();
 
     constructor() {
-        this.server.on("ping", client => {
-            client.send("pong", { name: "server 1" });
+        this.connectionServer.on("ping", client => {
+            client.send("pong", { name: Server.name });
         });
 
-        this.server.on("login", (client, data) => {
+        this.connectionServer.on("login", (client, data) => {
             login(client, data as Receive.Login);
         });
 
-        this.server.on("move", (client, data) => {
+        this.connectionServer.on("move", (client, data) => {
             Players.getFromClient(client)?.handleMove(data);
         });
 
-        this.server.on("jump", (client, data) => {
+        this.connectionServer.on("jump", (client, data) => {
             Players.getFromClient(client)?.jump();
         })
     }

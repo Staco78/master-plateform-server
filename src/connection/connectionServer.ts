@@ -2,12 +2,16 @@ import WebSocket from "ws";
 import EventEmitter from "events";
 import Client from "./client";
 import { Players } from "../features/players/players";
+import { Server } from "../server";
 
 class ConnectionServer extends EventEmitter {
     readonly ws = new WebSocket.Server({ port: 3497 });
 
     constructor() {
         super();
+
+        console.log("Server started");
+
         this.ws.on("connection", wss => {
             console.log(`Client connected`);
 
@@ -30,8 +34,17 @@ class ConnectionServer extends EventEmitter {
                 this.emit(json.action, client, json.data || {});
             });
 
+            wss.on("error", err => {
+                console.log(err.message);
+            });
+
             wss.on("close", (code, reason) => {
-                Players.deleteFromClient(client);
+                if (Players.find(player => player.client === client)) {
+                    const player = Players.deleteFromClient(client);
+
+                    Server.emit("playerDisconnected", player);
+                    console.log(`${player.name} left the game`);
+                }
 
                 console.log("Client disconnected", code, reason);
             });

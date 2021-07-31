@@ -1,7 +1,9 @@
 type actionSend = "pong" | "move" | "chunk";
-type actionReceive = "ping" | "login" | "move" | "jump";
+type actionReceive = "ping" | "login" | "move" | "jump" | "blockBreak";
 
 type BlockName = "dirt" | "grass" | "stone" | "wood" | "leaves";
+
+type serverEvents = "playerConnected" | "playerDisconnected";
 
 declare const enum Direction {
     stop,

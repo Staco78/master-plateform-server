@@ -19,9 +19,17 @@ export namespace Players {
     }
 
     export function deleteFromClient(client: Client) {
-        const player = players.findIndex(player => player.client === client);
-        if (player === -1) throw "Player not found";
+        const playerIndex = players.findIndex(player => player.client === client);
+        if (playerIndex === -1) throw "Player not found";
 
-        players.splice(player);
+        const player = players[playerIndex];
+
+        players.splice(playerIndex);
+
+        return player;
+    }
+
+    export function find(cb: (value: Player, index: number, obj: Player[]) => boolean, thisArg?: any) {
+        return players.find(cb, thisArg);
     }
 }

@@ -1,11 +1,4 @@
-import {
-    collisionDetectionDistance,
-    gravity,
-    jumpStrenght,
-    maxFallSpeed,
-    playerSize,
-    playerSpeed,
-} from "../../common/constants";
+import { collisionDetectionDistance, gravity, jumpStrenght, maxFallSpeed, playerSize, playerSpeed } from "../../common/constants";
 import Client from "../../connection/client";
 import World from "../world/world";
 import Rectangle from "../../types/rectangle";
@@ -32,21 +25,20 @@ export default class Player {
         this.move = data.direction;
     }
 
-    tick(delta: number) {
+    tick() {
         if (this.move === Direction.right) this.speed.x += playerSpeed;
         else if (this.move === Direction.left) this.speed.x -= playerSpeed;
 
         const lastSendMove = { x: this.pos.x, y: this.pos.y };
 
         //gravity
-        this.speed.y += -gravity * delta;
+        this.speed.y += -gravity;
         this.speed.y = Math.max(this.speed.y, -maxFallSpeed);
 
         if (!this.speed.equals({ x: 0, y: 0 })) {
-            this.calcCollision(delta);
+            this.calcCollision();
 
-            if (lastSendMove.x !== this.pos.x || lastSendMove.y !== this.pos.y)
-                this.client.send("move", { pos: { x: this.pos.x, y: this.pos.y } });
+            if (lastSendMove.x !== this.pos.x || lastSendMove.y !== this.pos.y) this.client.send("move", { pos: { x: this.pos.x, y: this.pos.y } });
         }
 
         let visibleChunks = World.getVisiblesChunk(this.pos.x);
@@ -62,25 +54,17 @@ export default class Player {
 
     private sendChunkData(chunk: Chunk) {
         console.log("chunk data send", chunk.pos);
-        
+
         this.client.send("chunk", { pos: chunk.pos, data: chunk.getData() });
     }
 
-    private calcCollision(delta: number) {
+    private calcCollision() {
         let testPos = this.pos.clone();
-        testPos.x += this.speed.x * delta;
-        testPos.y += this.speed.y * delta;
+        testPos.x += this.speed.x;
+        testPos.y += this.speed.y;
 
-        for (
-            let x = Math.round(this.pos.x) - collisionDetectionDistance;
-            x <= Math.round(this.pos.x) + collisionDetectionDistance;
-            x++
-        ) {
-            for (
-                let y = Math.round(this.pos.y) - collisionDetectionDistance;
-                y <= Math.round(this.pos.y) + collisionDetectionDistance;
-                y++
-            ) {
+        for (let x = Math.round(this.pos.x) - collisionDetectionDistance; x <= Math.round(this.pos.x) + collisionDetectionDistance; x++) {
+            for (let y = Math.round(this.pos.y) - collisionDetectionDistance; y <= Math.round(this.pos.y) + collisionDetectionDistance; y++) {
                 let block = World.getBlock(new Vector2D(x, y));
 
                 if (block) {
@@ -92,14 +76,9 @@ export default class Player {
                     let blockRect = new Rectangle(x, y, 1, 1);
 
                     // colision X
-                    if (
-                        testCollisionAABB(
-                            new Rectangle(testPos.x, this.pos.y, playerSize.width, playerSize.height),
-                            blockRect
-                        )
-                    ) {
-                        let rightToLeft = Math.abs(this.pos.x + playerSize.width - blockRect.x) / delta;
-                        let leftToRight = (blockRect.x + blockRect.width - this.pos.x) / delta;
+                    if (testCollisionAABB(new Rectangle(testPos.x, this.pos.y, playerSize.width, playerSize.height), blockRect)) {
+                        let rightToLeft = Math.abs(this.pos.x + playerSize.width - blockRect.x);
+                        let leftToRight = blockRect.x + blockRect.width - this.pos.x;
 
                         this.speed.x = Math.min(rightToLeft, leftToRight);
 
@@ -107,14 +86,9 @@ export default class Player {
                     }
 
                     // colision Y
-                    if (
-                        testCollisionAABB(
-                            new Rectangle(this.pos.x, testPos.y, playerSize.width, playerSize.height),
-                            blockRect
-                        )
-                    ) {
-                        let topToBottom = Math.abs(this.pos.y + playerSize.height - blockRect.y) / delta;
-                        let bottomToTop = (blockRect.y + blockRect.height - this.pos.y) / delta;
+                    if (testCollisionAABB(new Rectangle(this.pos.x, testPos.y, playerSize.width, playerSize.height), blockRect)) {
+                        let topToBottom = Math.abs(this.pos.y + playerSize.height - blockRect.y);
+                        let bottomToTop = blockRect.y + blockRect.height - this.pos.y;
 
                         this.speed.y = Math.min(topToBottom, bottomToTop);
 
@@ -124,8 +98,11 @@ export default class Player {
             }
         }
 
-        this.pos.x += this.speed.x * delta;
-        this.pos.y += this.speed.y * delta;
+        if (!isFinite(this.speed.x)) this.speed.x = 0;
+        if (!isFinite(this.speed.y)) this.speed.y = 0;
+
+        this.pos.x += this.speed.x;
+        this.pos.y += this.speed.y;
 
         this.speed.x = 0;
     }
@@ -148,11 +125,7 @@ export default class Player {
 }
 
 function testCollisionAABB(rect1: Rectangle, rect2: Rectangle) {
-    let result =
-        rect1.x < rect2.x + rect2.width &&
-        rect1.x + rect1.width > rect2.x &&
-        rect1.y < rect2.y + rect2.height &&
-        rect1.y + rect1.height > rect2.y;
+    let result = rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y;
 
     // console.log(result);
 
