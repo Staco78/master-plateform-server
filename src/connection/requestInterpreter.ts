@@ -1,7 +1,8 @@
-import ConnectionServer from "./connectionServer"; 
+import ConnectionServer from "./connectionServer";
 import login from "../features/login";
 import { Players } from "../features/players/players";
 import { Server } from "../server";
+import blockBreak from "../features/world/blockBreak";
 
 export default class RequestInterpreter {
     readonly connectionServer = new ConnectionServer();
@@ -21,6 +22,11 @@ export default class RequestInterpreter {
 
         this.connectionServer.on("jump", (client, data) => {
             Players.getFromClient(client)?.jump();
-        })
+        });
+
+        this.connectionServer.on("blockBreak", (client, data) => {
+            const player = Players.getFromClient(client);
+            if (player) blockBreak(player, data);
+        });
     }
 }

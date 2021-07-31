@@ -1,10 +1,3 @@
-import RequestInterpreter from "./connection/requestInterpreter";
-import { Players } from "./features/players/players";
+import { Server } from "./server";
 
-new RequestInterpreter();
-
-setInterval(() => {
-    Players.forEach(player => {
-        player.tick();
-    });
-}, 1000 / 60);
+Server.init();

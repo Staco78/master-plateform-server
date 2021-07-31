@@ -1,4 +1,4 @@
-type actionSend = "pong" | "move" | "chunk";
+type actionSend = "pong" | "move" | "chunk" | "blockBreak";
 type actionReceive = "ping" | "login" | "move" | "jump" | "blockBreak";
 
 type BlockName = "dirt" | "grass" | "stone" | "wood" | "leaves";
@@ -23,6 +23,13 @@ declare namespace Receive {
 
     interface PlayerStartMove {
         direction: Direction;
+    }
+
+    interface BlockBreak {
+        block: {
+            x: number;
+            y: number;
+        };
     }
 }
 

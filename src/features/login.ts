@@ -9,7 +9,7 @@ export default function login(client: Client, data: Receive.Login) {
         return client.error("Invalid data");
     }
 
-    if (Players.find(player => player.name === data.username)) return client.error("Player already exist");
+    if (Players.find(player => player.name === data.username)) return client.error("Player already exist", true);
 
     const player = createPlayer(client, data);
 

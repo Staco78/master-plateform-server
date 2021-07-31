@@ -5,6 +5,7 @@ import ChunksManager from "./chunksManager";
 import Player from "../players/player";
 import Generation from "./generation/generation";
 import { renderDistance } from "../../common/constants";
+import { Players } from "../players/players";
 
 export default class World {
     static readonly chunks = new ChunksManager();
@@ -62,5 +63,7 @@ export default class World {
         if (!chunk.blocks.has(blockPos)) throw new Error(`Block not found (${pos.x}:${pos.y})`);
 
         chunk.deleteBlock(blockPos);
+
+        Players.forEach(player => player.client.send("blockBreak", { block: { x: pos.x, y: pos.y } }));
     }
 }
