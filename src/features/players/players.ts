@@ -1,4 +1,5 @@
 import Client from "../../connection/client";
+import WsError from "../../types/wsError";
 import Player from "./player";
 
 export namespace Players {
@@ -11,7 +12,7 @@ export namespace Players {
     export function getFromClient(client: Client) {
         const player = players.find(player => player.client === client);
         if (player) return player;
-        client.error("Who are you ?", true);
+        throw new WsError("Who are you ?", true);
     }
 
     export function forEach(cb: (player: Player, index: number, array: Player[]) => void): void {

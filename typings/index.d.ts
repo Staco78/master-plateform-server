@@ -1,4 +1,4 @@
-type actionSend = "pong" | "move" | "chunk" | "blockBreak";
+type actionSend = "move" | "chunk" | "blockBreak";
 type actionReceive = "ping" | "login" | "move" | "jump" | "blockBreak";
 
 type BlockName = "dirt" | "grass" | "stone" | "wood" | "leaves";
@@ -9,6 +9,13 @@ declare const enum Direction {
     stop,
     left,
     right,
+}
+
+interface wsMessageData<T = any> {
+    type: 0 | 1 | 2;
+    action?: string;
+    id?: string;
+    data: T;
 }
 
 interface ChunkData {

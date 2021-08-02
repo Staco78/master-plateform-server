@@ -3,15 +3,17 @@ import { Players } from "./players/players";
 import Player from "./players/player";
 import Vector2D from "../types/vector2D";
 import { Server } from "../server";
+import WsError from "../types/wsError";
+import WsMessage from "../types/wsMessage";
 
-export default function login(client: Client, data: Receive.Login) {
-    if (!data.username) {
-        return client.error("Invalid data");
+export default function login(client: Client, message: WsMessage<Receive.Login>) {
+    if (!message.data.username) {
+        throw new WsError("Invalid data");
     }
 
-    if (Players.find(player => player.name === data.username)) return client.error("Player already exist", true);
+    if (Players.find(player => player.name === message.data.username)) throw new WsError("Player already exist", true);
 
-    const player = createPlayer(client, data);
+    const player = createPlayer(client, message.data);
 
     Players.addPlayer(player);
 

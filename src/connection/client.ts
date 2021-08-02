@@ -1,20 +1,34 @@
 import WebSocket from "ws";
+import { generateUuid } from "../common/utils";
+import ConnectionServer from "./connectionServer";
 
 export default class Client {
     private wsClient: WebSocket;
-    constructor(wsClient: WebSocket) {
+    private connectionServer: ConnectionServer;
+    constructor(wsClient: WebSocket, connectionServer: ConnectionServer) {
         this.wsClient = wsClient;
+        this.connectionServer = connectionServer;
     }
 
-    send(action: actionSend, data: object, cb?: (err?: Error) => void) {
-        this.wsClient.send(
-            JSON.stringify({
-                action,
-                data,
-            }),
-            cb
-        );
+    send(action: actionSend, data: any, cb?: (err?: Error) => void) {
+        this.sendRaw({ action, data, type: 0 }, cb);
+    }
 
+    emit(action: actionSend, data: any) {
+        return new Promise((resolve, reject) => {
+            const id = generateUuid();
+            this.sendRaw({ action, data, type: 1, id }, e => {
+                if (e) reject(e);
+            });
+
+            this.connectionServer.onResponse(id, data => {
+                resolve(data);
+            });
+        });
+    }
+
+    sendRaw(data: wsMessageData, cb?: (err?: Error) => void) {
+        this.wsClient.send(JSON.stringify(data), cb);
     }
 
     error(message: string, fatal = false) {

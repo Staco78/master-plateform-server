@@ -5,35 +5,39 @@ import Leaves from "../features/world/blocks/leaves";
 import Stone from "../features/world/blocks/stone";
 import Wood from "../features/world/blocks/wood";
 
+import * as uuid from "uuid";
 
 export function negativeModulo(x: number) {
     let result;
-	if (x % 16 == 0) result = 0;
-	else if (x >= 0) result = x % 16;
-	else result = 16 + (x % 16);
+    if (x % 16 == 0) result = 0;
+    else if (x >= 0) result = x % 16;
+    else result = 16 + (x % 16);
 
     return result;
 }
 
-
 export function getBlockClassFromName(name: BlockName | string): typeof Block {
-	switch (name) {
-		case "dirt":
-			return Dirt;
+    switch (name) {
+        case "dirt":
+            return Dirt;
 
-		case "grass":
-			return Grass;
+        case "grass":
+            return Grass;
 
-		case "leaves":
-			return Leaves;
+        case "leaves":
+            return Leaves;
 
-		case "stone":
-			return Stone;
+        case "stone":
+            return Stone;
 
-		case "wood":
-			return Wood;
+        case "wood":
+            return Wood;
 
-		default:
-			throw new Error("No block exist with this name");
-	}
+        default:
+            throw new Error("No block exist with this name");
+    }
+}
+
+export function generateUuid(): string {
+    return uuid.v4();
 }
