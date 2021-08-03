@@ -12,10 +12,11 @@ declare const enum Direction {
 }
 
 interface wsMessageData<T = any> {
-    type: 0 | 1 | 2;
+    type: 0 | 1;
     action?: string;
-    id?: string;
-    data: T;
+    id: string;
+    data?: T;
+    error?: string;
 }
 
 interface ChunkData {

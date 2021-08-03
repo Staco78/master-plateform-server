@@ -10,12 +10,8 @@ export default class Client {
         this.connectionServer = connectionServer;
     }
 
-    send(action: actionSend, data: any, cb?: (err?: Error) => void) {
-        this.sendRaw({ action, data, type: 0 }, cb);
-    }
-
-    emit(action: actionSend, data: any) {
-        return new Promise((resolve, reject) => {
+    send(action: actionSend, data: any) {
+        return new Promise<any>((resolve, reject) => {
             const id = generateUuid();
             this.sendRaw({ action, data, type: 1, id }, e => {
                 if (e) reject(e);
@@ -24,6 +20,8 @@ export default class Client {
             this.connectionServer.onResponse(id, data => {
                 resolve(data);
             });
+
+            this.connectionServer.onError(id, reject);
         });
     }
 
