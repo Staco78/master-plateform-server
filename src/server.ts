@@ -1,14 +1,14 @@
 import EventEmitter from "events";
-import RequestInterpreter from "./connection/requestInterpreter";
+import Connection from "./connection/connection";
 import { Players } from "./features/players/players";
 
 export namespace Server {
     const events = new EventEmitter();
 
-    export let requestInterpreter: RequestInterpreter;
+    export let requestInterpreter: Connection;
 
     export function init() {
-        requestInterpreter = new RequestInterpreter();
+        requestInterpreter = new Connection();
 
         setInterval(() => {
             Players.forEach(player => {

@@ -1,9 +1,11 @@
 import { collisionDetectionDistance, gravity, jumpStrenght, maxFallSpeed, playerSize, playerSpeed } from "../../common/constants";
-import Client from "../../connection/client";
 import World from "../world/world";
 import Rectangle from "../../types/rectangle";
 import Vector2D from "../../types/vector2D";
 import Chunk from "../world/chunk";
+import { Client } from "reply-ws";
+import { Players } from "./players";
+import { Server } from "../../server";
 
 export default class Player {
     readonly name: string;
@@ -19,6 +21,17 @@ export default class Player {
         this.pos = position;
         this.client = client;
         this.speed = new Vector2D(0, 0);
+
+        this.client.on("close", (code, reason) => {
+            if (Players.find(player => player.client === client)) {
+                const player = Players.deleteFromClient(client);
+
+                Server.emit("playerDisconnected", player);
+                console.log(`${player.name} left the game`);
+            }
+
+            console.log("Client disconnected", code, reason.toString());
+        });
     }
 
     handleMove(data: Receive.PlayerStartMove) {

@@ -1,10 +1,8 @@
-import Client from "../connection/client";
 import { Players } from "./players/players";
 import Player from "./players/player";
 import Vector2D from "../types/vector2D";
 import { Server } from "../server";
-import WsError from "../types/wsError";
-import WsMessage from "../types/wsMessage";
+import { Client, WsError, WsMessage } from "reply-ws";
 
 export default function login(client: Client, message: WsMessage<Receive.Login>) {
     if (!message.data.username) {

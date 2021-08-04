@@ -1,5 +1,4 @@
-import Client from "../../connection/client";
-import WsError from "../../types/wsError";
+import { Client, WsError } from "reply-ws";
 import Player from "./player";
 
 export namespace Players {

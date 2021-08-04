@@ -5,8 +5,6 @@ import Leaves from "../features/world/blocks/leaves";
 import Stone from "../features/world/blocks/stone";
 import Wood from "../features/world/blocks/wood";
 
-import * as uuid from "uuid";
-
 export function negativeModulo(x: number) {
     let result;
     if (x % 16 == 0) result = 0;
@@ -36,8 +34,4 @@ export function getBlockClassFromName(name: BlockName | string): typeof Block {
         default:
             throw new Error("No block exist with this name");
     }
-}
-
-export function generateUuid(): string {
-    return uuid.v4();
 }
