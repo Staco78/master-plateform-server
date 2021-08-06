@@ -51,7 +51,8 @@ export default class Player {
         if (!this.speed.equals({ x: 0, y: 0 })) {
             this.calcCollision();
 
-            if (lastSendMove.x !== this.pos.x || lastSendMove.y !== this.pos.y) this.client.send("move", { pos: { x: this.pos.x, y: this.pos.y } });
+            if (lastSendMove.x !== this.pos.x || lastSendMove.y !== this.pos.y)
+                Players.forEach(player => player.client.send("playerMoved", { username: this.name, pos: { x: this.pos.x, y: this.pos.y } }));
         }
 
         let visibleChunks = World.getVisiblesChunk(this.pos.x);

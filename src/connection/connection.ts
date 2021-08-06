@@ -20,11 +20,11 @@ export default class Connection {
         });
 
         this.server.onAction("move", (client, message) => {
-            Players.getFromClient(client)?.handleMove(message.data);
+            Players.getFromClient(client).handleMove(message.data);
         });
 
         this.server.onAction("jump", (client, data) => {
-            Players.getFromClient(client)?.jump();
+            Players.getFromClient(client).jump();
         });
 
         this.server.onAction("blockBreak", (client, data) => {

@@ -1,6 +1,3 @@
-type actionSend = "move" | "chunk" | "blockBreak";
-type actionReceive = "ping" | "login" | "move" | "jump" | "blockBreak";
-
 type BlockName = "dirt" | "grass" | "stone" | "wood" | "leaves";
 
 type serverEvents = "playerConnected" | "playerDisconnected";
@@ -11,13 +8,6 @@ declare const enum Direction {
     right,
 }
 
-interface wsMessageData<T = any> {
-    type: 0 | 1;
-    action?: string;
-    id: string;
-    data?: T;
-    error?: string;
-}
 
 interface ChunkData {
     pos: number;
